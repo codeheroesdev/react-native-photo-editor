@@ -111,7 +111,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         Log.d("PhotoEditorSDK", "Selected image path: " + selectedImagePath);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 1;
+        options.inSampleSize = 4;
         Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
 
         Bitmap rotatedBitmap;
