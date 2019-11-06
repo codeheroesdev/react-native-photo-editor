@@ -39,6 +39,12 @@ RCT_EXPORT_METHOD(Edit:(nonnull NSDictionary *)props onDone:(RCTResponseSenderBl
 
         PhotoEditorViewController *photoEditor = [[PhotoEditorViewController alloc] initWithNibName:@"PhotoEditorViewController" bundle: [NSBundle bundleForClass:[PhotoEditorViewController class]]];
 
+        // The default modal presenting is page sheet in ios 13, not full screen
+if (@available(iOS 13, *)) {
+   [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
+}
+        
+        
         // Process Image for Editing
         UIImage *image = [UIImage imageWithContentsOfFile:_editImagePath];
         if (image == nil) {
