@@ -17,9 +17,21 @@ RCTResponseSenderBlock _onCancelEditing = nil;
 - (void)doneEditingWithImage:(UIImage *)image {
     if (_onDoneEditing == nil) return;
     
-    // Save image.
-    [UIImagePNGRepresentation(image) writeToFile:_editImagePath atomically:YES];
-    
+    NSError* error;
+
+    BOOL isPNG = [_editImagePath.pathExtension.lowercaseString isEqualToString:@"png"];
+    NSString* path = _editImagePath;
+
+    if ([path containsString:@"file://"]) {
+        NSURL *url = [NSURL URLWithString:_editImagePath];
+        path = url.path;
+    }
+
+    [isPNG ? UIImagePNGRepresentation(image) : UIImageJPEGRepresentation(image, 0.8) writeToFile:path options:NSDataWritingAtomic error:&error];
+
+    if (error != nil)
+        NSLog(@"write error %@", error); 
+   
     _onDoneEditing(@[]);
 }
 
@@ -40,10 +52,9 @@ RCT_EXPORT_METHOD(Edit:(nonnull NSDictionary *)props onDone:(RCTResponseSenderBl
         PhotoEditorViewController *photoEditor = [[PhotoEditorViewController alloc] initWithNibName:@"PhotoEditorViewController" bundle: [NSBundle bundleForClass:[PhotoEditorViewController class]]];
 
         // The default modal presenting is page sheet in ios 13, not full screen
-if (@available(iOS 13, *)) {
-   [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
-}
-        
+        if (@available(iOS 13, *)) {
+        [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
+        }
         
         // Process Image for Editing
         UIImage *image = [UIImage imageWithContentsOfFile:_editImagePath];
@@ -88,6 +99,11 @@ if (@available(iOS 13, *)) {
 
         // Invoke Editor
         photoEditor.photoEditorDelegate = self;
+	
+	// The default modal presenting is page sheet in ios 13, not full screen
+	if (@available(iOS 13, *)) {
+            [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
+        }
 
         id<UIApplicationDelegate> app = [[UIApplication sharedApplication] delegate];
         UINavigationController *rootViewController = ((UINavigationController*) app.window.rootViewController);
