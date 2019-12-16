@@ -27,7 +27,7 @@ RCTResponseSenderBlock _onCancelEditing = nil;
         path = url.path;
     }
 
-    [isPNG ? UIImagePNGRepresentation(image) : UIImageJPEGRepresentation(image, 0.8) writeToFile:path options:NSDataWritingAtomic error:&error];
+    [isPNG ? UIImagePNGRepresentation(image) : UIImageJPEGRepresentation(image, 1.0) writeToFile:path options:NSDataWritingAtomic error:&error];
 
     if (error != nil)
         NSLog(@"write error %@", error); 
@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(Edit:(nonnull NSDictionary *)props onDone:(RCTResponseSenderBl
 
         // The default modal presenting is page sheet in ios 13, not full screen
         if (@available(iOS 13, *)) {
-        [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
+            [photoEditor setModalPresentationStyle: UIModalPresentationFullScreen];
         }
         
         // Process Image for Editing
