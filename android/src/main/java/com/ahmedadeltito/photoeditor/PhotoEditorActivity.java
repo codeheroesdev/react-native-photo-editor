@@ -99,7 +99,6 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
     private ImageView photoEditImageView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +112,9 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         }
         Log.d("PhotoEditorSDK", "Selected image path: " + selectedImagePath);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
 
         Bitmap rotatedBitmap;
         try {
